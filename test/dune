@@ -1,0 +1,4 @@
+(test
+ (name handler_test)
+ (modules handler_test)
+ (libraries alcotest dream-dashboard))

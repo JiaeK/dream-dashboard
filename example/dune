@@ -1,0 +1,12 @@
+(executable
+ (name server)
+ (modules server)
+ (libraries dream-dashboard))
+
+(rule
+ (alias run)
+ (deps server.exe %{workspace_root}/asset/main.css)
+ (action
+  (chdir
+   %{workspace_root}
+   (run example/server.exe -v))))

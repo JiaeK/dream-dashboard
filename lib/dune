@@ -1,0 +1,16 @@
+(library
+ (public_name dream-dashboard)
+ (name dream_dashboard)
+ (libraries dream dune-build-info metrics metrics-rusage metrics-lwt))
+
+(rule
+ (targets asset.ml)
+ (deps
+  ../asset/main.css
+  (source_tree ../asset))
+ (action
+  (with-stdout-to
+   %{null}
+   (run %{bin:ocaml-crunch} -m plain ../asset -o %{targets}))))
+
+(include_subdirs unqualified)
