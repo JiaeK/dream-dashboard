@@ -15,8 +15,10 @@ val uptime : unit -> float
 (** [uptime ()] returns the uptime of the system in seconds. *)
 
 val os_type : string
+(** [os_type] *)
 
 val architecture : string
+(** [architecture] *)
 
 val cpu_usage : unit -> float
 (** [cpu_usage ()] returns the CPU usage in percent. *)

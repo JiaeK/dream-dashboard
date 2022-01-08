@@ -19,7 +19,7 @@ let uptime () = Sys.time ()
 
 let os_type = Sys.os_type
 
-let architecture = failwith "TODO"
+let architecture = "%%ARCH%%"
 
 let () =
   let open Lwt.Syntax in
