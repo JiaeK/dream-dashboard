@@ -145,14 +145,11 @@ let () =
       let _tags, proc_cpu_data =
         Metrics.SM.find (Src proc_cpu_src) (get_metrics ())
       in
-      print_endline "1";
       match (!past_rusage, !past_proc_cpu) with
       | None, _ | _, None ->
-          print_endline "2";
           past_rusage := Some rusage_data;
           past_proc_cpu := Some proc_cpu_data
       | Some past_rusage_data, Some past_proc_cpu_data ->
-          print_endline "3";
           let utime_before =
             Metrics_field.float (get_field "utime" past_rusage_data)
           in

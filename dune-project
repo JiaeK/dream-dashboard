@@ -22,6 +22,7 @@
   dream
   dune-build-info
   luv
+  user-agent-parser
   (alcotest :with-test)
   (odoc :with-doc)
   ; Vendored metrics dependencies

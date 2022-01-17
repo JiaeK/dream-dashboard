@@ -1,4 +1,5 @@
 let render 
+  ~prefix
   ~ocaml_version
   ~dream_version
   ~dashboard_version
@@ -6,7 +7,7 @@ let render
   ~architecture
   ~uptime
   () =
-  Layout_template.render ~title:"Dream Dashboard" @@
+  Layout_template.render ~prefix ~title:"Dream Dashboard" @@
   <div class="relative bg-gray-200">
     <div class="absolute inset-0 flex flex-col" aria-hidden="true">
       <div class="flex-1 bg-gray-100"></div>

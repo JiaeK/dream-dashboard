@@ -1,7 +1,7 @@
-type t =
-  { message : string  (** Error message *)
-  ; name : string  (** Error name *)
-  }
+type t = {
+  message : string;  (** Error message *)
+  name : string;  (** Error name *)
+}
 
 exception Exn of t
 
