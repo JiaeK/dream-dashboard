@@ -11,11 +11,13 @@ depends: [
   "crunch"
   "dream"
   "dune-build-info"
-  "metrics"
-  "metrics-rusage"
-  "metrics-lwt"
+  "luv"
   "alcotest" {with-test}
   "odoc" {with-doc}
+  "fmt"
+  "uuidm"
+  "mtime"
+  "lwt"
 ]
 build: [
   ["dune" "subst"] {dev}

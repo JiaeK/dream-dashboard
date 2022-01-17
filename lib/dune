@@ -1,7 +1,7 @@
 (library
  (public_name dream-dashboard)
  (name dream_dashboard)
- (libraries dream dune-build-info metrics metrics-rusage metrics-lwt))
+ (libraries dream dune-build-info metrics metrics-rusage metrics-lwt luv))
 
 (rule
  (targets asset.ml)

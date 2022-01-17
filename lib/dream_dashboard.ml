@@ -1,5 +1,10 @@
 module Handler = struct
-  let index _req = Dream.html (Index_template.render ())
+  let index _req =
+    Dream.html
+      (Index_template.render ~ocaml_version:Info.ocaml_version
+         ~dream_version:(Info.dream_version ())
+         ~dashboard_version:(Info.version ()) ~platform:Info.platform_string
+         ~architecture:Info.arch_string ~uptime:(Info.uptime ()) ())
 end
 
 module Router = struct

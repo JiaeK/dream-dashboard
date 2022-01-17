@@ -1,5 +1,20 @@
 (** This module provides some system information *)
 
+type platform = Darwin | Freebsd | Linux | Openbsd | Sunos | Win32 | Android
+
+type arch =
+  | Arm
+  | Arm64
+  | Ia32
+  | Mips
+  | Mipsel
+  | Ppc
+  | Ppc64
+  | S390
+  | S390x
+  | X32
+  | X64
+
 val ocaml_version : string
 (** [ocaml_version] is the version of the OCaml compiler used to compile the
     project. *)
@@ -14,9 +29,23 @@ val dream_version : unit -> string
 val uptime : unit -> float
 (** [uptime ()] returns the uptime of the system in seconds. *)
 
-val os_type : string
+val arch_string : string
 
-val architecture : string
+val arch : arch
+(** [arch] is the CPU architecture the binary is running on. *)
 
-val cpu_usage : unit -> float
-(** [cpu_usage ()] returns the CPU usage in percent. *)
+val platform_string : string
+
+val platform : platform
+(** [platform] is the operating system type the binary is running on. *)
+
+val os_version : unit -> string
+(** [os_version] is the version of the operating system the binary is running
+    on. *)
+
+(* val cpu_count : int *)
+(** [cpu_count] is the number of CPUs cores available. *)
+
+val os_machine : unit -> string
+val os_release : unit -> string
+val sysname : unit -> string

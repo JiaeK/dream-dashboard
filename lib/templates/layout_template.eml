@@ -6,10 +6,6 @@ let render ~title inner =
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
       <link rel="icon" type="image/png" href="/assets/favicon.ico" />
       <link rel="stylesheet" href="/assets/main.css" />
-      
-      <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-      
-      
       <title><%s title %></title>
     </head>
 

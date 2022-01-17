@@ -21,8 +21,11 @@
   crunch
   dream
   dune-build-info
-  metrics
-  metrics-rusage
-  metrics-lwt
+  luv
   (alcotest :with-test)
-  (odoc :with-doc)))
+  (odoc :with-doc)
+  ; Vendored metrics dependencies
+  fmt
+  uuidm
+  mtime
+  lwt))

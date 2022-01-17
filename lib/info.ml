@@ -1,3 +1,7 @@
+let () = Printexc.record_backtrace true
+
+open Import
+
 let ocaml_version = Sys.ocaml_version
 
 let version () =
@@ -15,53 +19,183 @@ let dream_version () =
       | None -> "dev"
       | Some version -> Version.to_string version)
 
-let uptime () = Sys.time ()
+let uptime =
+  let init = Unix.gettimeofday () in
+  fun () -> Unix.gettimeofday () -. init
 
-let os_type = Sys.os_type
+type platform = Darwin | Freebsd | Linux | Openbsd | Sunos | Win32 | Android
 
-let architecture = failwith "TODO"
+type arch =
+  | Arm
+  | Arm64
+  | Ia32
+  | Mips
+  | Mipsel
+  | Ppc
+  | Ppc64
+  | S390
+  | S390x
+  | X32
+  | X64
+
+let platform_of_string = function
+  | "darwin" -> Darwin
+  | "freebsd" -> Freebsd
+  | "linux" -> Linux
+  | "openbsd" -> Openbsd
+  | "sunos" -> Sunos
+  | "win32" -> Win32
+  | "android" -> Android
+  | platform ->
+      print_endline (Printf.sprintf "Unsupported architecture %s" platform);
+      assert false
+
+let arch_of_string = function
+  | "arm" -> Arm
+  | "arm64" -> Arm64
+  | "ia32" -> Ia32
+  | "mips" -> Mips
+  | "mipsel" -> Mipsel
+  | "ppc" -> Ppc
+  | "ppc64" -> Ppc64
+  | "s390" -> S390
+  | "s390x" -> S390x
+  | "x86_32" | "x32" -> X32
+  | "x86_64" | "x64" -> X64
+  | arch ->
+      print_endline (Printf.sprintf "Unsupported architecture %s" arch);
+      assert false
+
+let arch_string =
+  let open Result.Syntax in
+  let@ () = handle_sys_error in
+  let+ uname = Luv.System_info.uname () in
+  uname.Luv.System_info.Uname.machine
+
+let arch = arch_of_string arch_string
+
+let platform_string =
+  let open Result.Syntax in
+  let@ () = handle_sys_error in
+  let+ uname = Luv.System_info.uname () in
+  String.lowercase_ascii uname.Luv.System_info.Uname.sysname
+
+let platform = platform_of_string platform_string
+
+let sysname () =
+  let open Result.Syntax in
+  let@ () = handle_sys_error in
+  let+ uname = Luv.System_info.uname () in
+  uname.Luv.System_info.Uname.sysname
+
+let os_release () =
+  let open Result.Syntax in
+  let@ () = handle_sys_error in
+  let+ uname = Luv.System_info.uname () in
+  uname.Luv.System_info.Uname.release
+
+let os_version () =
+  let open Result.Syntax in
+  let@ () = handle_sys_error in
+  let+ uname = Luv.System_info.uname () in
+  uname.Luv.System_info.Uname.version
+
+let os_machine () =
+  let open Result.Syntax in
+  let@ () = handle_sys_error in
+  let+ uname = Luv.System_info.uname () in
+  uname.Luv.System_info.Uname.machine
+
+(* let get_cmd_stdout cmd = let i = Unix.open_process_in cmd in let close () =
+   ignore (Unix.close_process_in i) in try Scanf.bscanf
+   (Scanf.Scanning.from_channel i) "%d" (fun n -> close (); Ok n) with |
+   Not_found | Sys_error _ | Failure _ | Scanf.Scan_failure _ | End_of_file |
+   Unix.Unix_error (_, _, _) -> close (); Error (Printf.sprintf "Could not get
+   output of \"%s\"" cmd)
+
+   let cpu_count = let result = match platform with | Win32 -> ( match
+   int_of_string_opt (Sys.getenv "NUMBER_OF_PROCESSORS") with | Some x -> Ok x |
+   None -> Error "Could not read environment variable NUMBER_OF_PROCESSORS") |
+   Freebsd | Openbsd -> get_cmd_stdout "sysctl -n hw.ncpu" | _ -> get_cmd_stdout
+   "getconf _NPROCESSORS_ONLN" in match result with Ok x -> x | Error _ -> 1 *)
+
+let get_field name data =
+  let fields = Metrics.Data.fields data in
+  List.find (fun field -> Metrics.key field = name) fields
+
+module Metrics_field = struct
+  let float f =
+    match Metrics.value f with
+    | V (Float, x) -> (x : float)
+    | _ -> failwith "wrong type for metrics field"
+
+  let uint f =
+    match Metrics.value f with
+    | V (Uint, x) -> (x : int)
+    | _ -> failwith "wrong type for metrics field"
+end
+
+let rusage_src = Metrics_rusage.rusage_src ~tags:[]
+let kinfo_mem_src = Metrics_rusage.kinfo_mem_src ~tags:[]
+let proc_cpu_src = My_metrics.proc_cpu_src ~tags:[]
 
 let () =
-  let open Lwt.Syntax in
-  let interval = 5.0 in
+  let interval = 1.0 in
   Metrics.enable_all ();
   Metrics_lwt.init_periodic (fun () -> Lwt_unix.sleep interval);
-  Metrics_lwt.periodically (Metrics_rusage.rusage_src ~tags:[]);
-  Metrics_lwt.periodically (Metrics_rusage.kinfo_mem_src ~tags:[]);
-  let get_cache, reporter = Metrics.cache_reporter () in
+  Metrics_lwt.periodically rusage_src;
+  Metrics_lwt.periodically kinfo_mem_src;
+  Metrics_lwt.periodically proc_cpu_src;
+  let get_metrics, reporter = Metrics.cache_reporter () in
   Metrics.set_reporter reporter;
-  let rec report () =
-    let send () =
-      let datas =
-        Metrics.SM.fold
-          (fun src (tags, data) acc ->
-            let name = Metrics.Src.name src in
-            Pp.encode tags data name :: acc)
-          (get_cache ()) []
+  let past_rusage = ref None in
+  let past_proc_cpu = ref None in
+  let report () =
+    try
+      let _tags, rusage_data =
+        Metrics.SM.find (Src rusage_src) (get_metrics ())
       in
-      let datas = String.concat "" datas in
-      print_endline datas;
-      Lwt.return ()
-    and sleep () = Lwt_unix.sleep interval in
-    let* () = Lwt.join [ send (); sleep () ] in
-    report ()
+      let _tags, proc_cpu_data =
+        Metrics.SM.find (Src proc_cpu_src) (get_metrics ())
+      in
+      print_endline "1";
+      match (!past_rusage, !past_proc_cpu) with
+      | None, _ | _, None ->
+          print_endline "2";
+          past_rusage := Some rusage_data;
+          past_proc_cpu := Some proc_cpu_data
+      | Some past_rusage_data, Some past_proc_cpu_data ->
+          print_endline "3";
+          let utime_before =
+            Metrics_field.float (get_field "utime" past_rusage_data)
+          in
+          let utime_after =
+            Metrics_field.float (get_field "utime" rusage_data)
+          in
+
+          let total_before =
+            Int.to_float
+              (Metrics_field.uint (get_field "total" past_proc_cpu_data))
+          in
+          let total_after =
+            Int.to_float (Metrics_field.uint (get_field "total" proc_cpu_data))
+          in
+
+          let cpu_usage =
+            100.
+            *. ((utime_after -. utime_before) /. (total_after -. total_before))
+          in
+
+          past_rusage := Some rusage_data;
+          past_proc_cpu := Some proc_cpu_data;
+
+          print_endline (Printf.sprintf "CPU Usage: %f" cpu_usage)
+    with Not_found -> ()
   in
-  Lwt.async report
-
-let cpu_usage () = failwith "TODO"
-
-(* let timer pid vmmapi interval = let rusage, kinfo_mem = sysctl_kinfo_proc pid
-   in Logs.app (fun m -> m "sysctl rusage: %a" Stats.pp_rusage_mem rusage) ;
-   Logs.app (fun m -> m "kinfo mem: %a" Stats.pp_kinfo_mem kinfo_mem) ; let
-   delta, pct = if !old_rt = 0L then let delta = kinfo_mem.Stats.runtime in let
-   now = Unix.gettimeofday () in let start = Int64.to_float (fst
-   kinfo_mem.start) +. ((float_of_int (snd kinfo_mem.start)) /. 1_000_000_000.)
-   in delta, Int64.to_float delta /. ((now -. start) *. 1_000_000.) else let
-   delta = Int64.sub kinfo_mem.Stats.runtime !old_rt in delta, Int64.to_float
-   delta /. (interval *. 1_000_000.) in Logs.app (fun m -> m "delta %Lu pct %f"
-   delta pct) ; old_rt := kinfo_mem.Stats.runtime; match vmmapi with | None ->
-   () | Some vmctx -> match wrap vmmapi_stats vmctx with | None -> Logs.app (fun
-   m -> m "no vmctx stats") | Some st -> let all = List.combine !descr st in
-   Logs.app (fun m -> m "bhyve stats %a" Stats.pp_vmm_mem all) *)
-
-(* Add functions for host system info, like the OS, the architecture, etc. *)
+  let rec aux () =
+    let open Lwt.Syntax in
+    report ();
+    let* () = Lwt_unix.sleep 5. in
+    aux ()
+  in
+  Lwt.async aux
