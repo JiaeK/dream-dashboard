@@ -106,19 +106,6 @@ let os_machine () =
   let+ uname = Luv.System_info.uname () in
   uname.Luv.System_info.Uname.machine
 
-(* let get_cmd_stdout cmd = let i = Unix.open_process_in cmd in let close () =
-   ignore (Unix.close_process_in i) in try Scanf.bscanf
-   (Scanf.Scanning.from_channel i) "%d" (fun n -> close (); Ok n) with |
-   Not_found | Sys_error _ | Failure _ | Scanf.Scan_failure _ | End_of_file |
-   Unix.Unix_error (_, _, _) -> close (); Error (Printf.sprintf "Could not get
-   output of \"%s\"" cmd)
-
-   let cpu_count = let result = match platform with | Win32 -> ( match
-   int_of_string_opt (Sys.getenv "NUMBER_OF_PROCESSORS") with | Some x -> Ok x |
-   None -> Error "Could not read environment variable NUMBER_OF_PROCESSORS") |
-   Freebsd | Openbsd -> get_cmd_stdout "sysctl -n hw.ncpu" | _ -> get_cmd_stdout
-   "getconf _NPROCESSORS_ONLN" in match result with Ok x -> x | Error _ -> 1 *)
-
 let get_field name data =
   let fields = Metrics.Data.fields data in
   List.find (fun field -> Metrics.key field = name) fields
