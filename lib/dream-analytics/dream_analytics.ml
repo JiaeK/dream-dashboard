@@ -16,19 +16,12 @@ module Store = struct
 end
 
 module Handler = struct
-  let index ~prefix _req =
-    Dream.html
-      (Index_template.render ~prefix ~ocaml_version:Info.ocaml_version
-         ~dream_version:(Info.dream_version ())
-         ~dashboard_version:(Info.version ()) ~platform:Info.platform_string
-         ~architecture:Info.arch_string ~uptime:(Info.uptime ()) ())
-
-  let analytics ~store ~prefix _req =
+  let index ~store ~prefix _req =
     let open Lwt.Syntax in
     let (module Repo : Store.S) = store in
     let* events = Repo.get_events () in
     match events with
-    | Ok events -> Dream.html (Analytics_template.render ~prefix events)
+    | Ok events -> Dream.html (Index_template.render ~prefix events)
     | Error _ ->
         Dream.respond ~code:500
           "could not get the list of events from the store"
@@ -49,7 +42,9 @@ module Middleware = struct
       | Some ua -> (
           let (module Repo : Store.S) = store in
           let url = Dream.target req in
-          let event = Event.{ url; ua } in
+          let referer = Dream.header "referer" req in
+          let timestamp = Unix.gettimeofday () in
+          let event = Event.{ url; ua; referer; timestamp } in
           let+ result = Repo.create_event event in
           match result with
           | Ok _ -> ()
@@ -69,8 +64,7 @@ module Router = struct
   let routes prefix middlewares store =
     Dream.scope prefix middlewares
       [
-        Dream.get "/" (Handler.index ~prefix);
-        Dream.get "/analytics" (Handler.analytics ~prefix ~store);
+        Dream.get "/" (Handler.index ~prefix ~store);
         Dream.get "/assets/**" (Dream.static ~loader "");
       ]
 
@@ -78,11 +72,12 @@ module Router = struct
     Dream.router [ routes prefix middlewares store ]
 end
 
-let router ?(store = (module Store.In_memory : Store.S)) ?(prefix = "/dashboard")
-    ?(middlewares = []) () =
+let router ?(store = (module Store.In_memory : Store.S))
+    ?(prefix = "/analytics") ?(middlewares = []) () =
   Router.router prefix middlewares store
 
-let analytics ?(store = (module Store.In_memory : Store.S)) () = Middleware.analytics store
+let analytics ?(store = (module Store.In_memory : Store.S)) () =
+  Middleware.analytics store
 
 module Private = struct
   module Handler = Handler

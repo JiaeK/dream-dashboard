@@ -6,8 +6,9 @@
     - host system information (OS, architecture, etc.). Something similar to the output of `uname -a`
 
 - Analytics
-  - Number of visitors
-  - Top sources
+  - Build an histogram of the requests
+  - Number of visitors (need IP if we want unique visitors)
+  - Top sources (different header)
   - Top pages
   - Devices
   - Browser

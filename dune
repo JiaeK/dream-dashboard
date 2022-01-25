@@ -3,7 +3,6 @@
  (rule
   (target main.css)
   (deps
-   (:data ../tailwind.config.js)
    (source_tree ../node_modules)
    (source_tree ../lib/templates))
   (mode promote-until-clean)

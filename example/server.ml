@@ -1,7 +1,7 @@
 let () =
   Dream.run @@ Dream.logger
-  @@ Dream_dashboard.router ~prefix:"/dashboard/" ()
-  @@ Dream_dashboard.analytics ()
+  @@ Dream_monitoring.router ~prefix:"/dashboard" ()
+  @@ Dream_analytics.router ~prefix:"/analytics" ()
   @@ Dream.router
        [
          Dream.get "/" (fun _req ->

@@ -1,11 +1,11 @@
 (executable
  (name server)
  (modules server)
- (libraries dream-dashboard))
+ (libraries dream-monitoring dream-analytics))
 
 (rule
  (alias run)
- (deps server.exe %{workspace_root}/asset/main.css)
+ (deps server.exe)
  (action
   (chdir
    %{workspace_root}

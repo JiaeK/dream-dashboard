@@ -9,9 +9,3 @@
  (deps index_template.eml)
  (action
   (run %{bin:dream_eml} %{deps} --workspace %{workspace_root})))
-
-(rule
- (targets analytics_template.ml)
- (deps analytics_template.eml)
- (action
-  (run %{bin:dream_eml} %{deps} --workspace %{workspace_root})))
