@@ -4,7 +4,8 @@ module Handler = struct
       (Index_template.render ~prefix ~ocaml_version:Info.ocaml_version
          ~dream_version:(Info.dream_version ())
          ~dashboard_version:(Info.version ()) ~platform:Info.platform_string
-         ~architecture:Info.arch_string ~uptime:(Info.uptime ()) ())
+         ~architecture:Info.arch_string ~cpu_usage:(Info.cpu_usage ())
+         ~uptime:(Info.uptime ()) ())
 end
 
 module Router = struct

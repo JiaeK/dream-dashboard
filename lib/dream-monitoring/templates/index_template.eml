@@ -5,6 +5,7 @@ let render
   ~dashboard_version
   ~platform
   ~architecture
+  ~cpu_usage
   ~uptime
   () =
   Layout_template.render ~prefix ~title:"Dream Dashboard" @@
@@ -65,6 +66,15 @@ let render
                   </dt>
                   <dd class="mt-1 text-3xl font-semibold text-gray-900">
                     <%s platform %> <%s architecture %>
+                  </dd>
+                </div>
+
+                <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                  <dt class="text-sm font-medium text-gray-500 truncate">
+                    CPU usage
+                  </dt>
+                  <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                    <%f cpu_usage %>
                   </dd>
                 </div>
               </dl>

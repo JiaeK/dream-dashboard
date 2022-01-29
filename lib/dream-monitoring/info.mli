@@ -46,6 +46,7 @@ val os_version : unit -> string
 (* val cpu_count : int *)
 (** [cpu_count] is the number of CPUs cores available. *)
 
+val cpu_usage : unit -> float
 val os_machine : unit -> string
 val os_release : unit -> string
 val sysname : unit -> string

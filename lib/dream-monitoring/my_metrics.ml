@@ -39,3 +39,26 @@ let proc_cpu_src ~tags =
           ]
   in
   Src.v ~doc ~tags ~data "proc_cpu"
+
+let open_fds ~tags =
+  let doc = "Number of open file descriptors" in
+  let graph = Graph.v ~title:doc ~ylabel:"value" () in
+  let dir = Printf.sprintf "/proc/%d/fd" (Unix.getpid ()) in
+  let data () =
+    let h = Unix.opendir dir in
+    Fun.protect
+      ~finally:(fun () -> Unix.closedir h)
+      (fun () ->
+        let rec inner count =
+          try
+            let name = Unix.readdir h in
+            match name with
+            | "." -> inner count
+            | ".." -> inner count
+            | _ -> inner (count + 1)
+          with End_of_file -> count
+        in
+        let fds = inner 0 in
+        Data.v [ uint "open_fds" ~graph fds ])
+  in
+  Src.v ~doc ~tags ~data "open_fds"
