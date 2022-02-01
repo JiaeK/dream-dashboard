@@ -1,7 +1,7 @@
 (executable
  (name server)
  (modules server)
- (libraries dream-monitoring dream-analytics))
+ (libraries dream-dashboard))
 
 (rule
  (alias run)

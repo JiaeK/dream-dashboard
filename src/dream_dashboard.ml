@@ -16,15 +16,30 @@ module Store = struct
 end
 
 module Handler = struct
-  let index ~store ~prefix _req =
+  let overview ~prefix _req =
+    Dream.html
+      (Overview_template.render ~prefix ~ocaml_version:Info.ocaml_version
+         ~dream_version:(Info.dream_version ())
+         ~dashboard_version:(Info.version ()) ~platform:Info.platform_string
+         ~architecture:Info.arch_string ~uptime:(Info.uptime ()) ())
+
+  let analytics ~store ~prefix _req =
     let open Lwt.Syntax in
     let (module Repo : Store.S) = store in
     let* events = Repo.get_events () in
     match events with
-    | Ok events -> Dream.html (Index_template.render ~prefix events)
+    | Ok events -> Dream.html (Analytics_template.render ~prefix events)
     | Error _ ->
         Dream.respond ~code:500
           "could not get the list of events from the store"
+
+  let monitoring ~prefix _req =
+    Dream.html
+      (Monitoring_template.render ~prefix ~cpu_count:Info.cpu_count
+         ~loadavg_list:(My_metrics.loadavg_report ())
+         ())
+
+  let logs ~prefix _req = Dream.html (Logs_template.render ~prefix ())
 end
 
 module Middleware = struct
@@ -64,7 +79,10 @@ module Router = struct
   let routes prefix middlewares store =
     Dream.scope prefix middlewares
       [
-        Dream.get "/" (Handler.index ~prefix ~store);
+        Dream.get "/" (Handler.overview ~prefix);
+        Dream.get "/" (Handler.monitoring ~prefix);
+        Dream.get "/" (Handler.logs ~prefix);
+        Dream.get "/" (Handler.analytics ~prefix ~store);
         Dream.get "/assets/**" (Dream.static ~loader "");
       ]
 
@@ -73,12 +91,10 @@ module Router = struct
 end
 
 let router ?(store = (module Store.In_memory : Store.S))
-    ?(prefix = "/analytics") ?(middlewares = []) () =
+    ?(prefix = "/dashboard") ?(middlewares = []) () =
   Router.router prefix middlewares store
 
 let analytics ?(store = (module Store.In_memory : Store.S)) () =
   Middleware.analytics store
 
-module Private = struct
-  module Handler = Handler
-end
+let init = My_metrics.init_metrics

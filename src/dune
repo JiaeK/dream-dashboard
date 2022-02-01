@@ -1,7 +1,8 @@
 (library
- (public_name dream-analytics)
- (name dream_analytics)
- (libraries dream user-agent-parser))
+ (public_name dream-dashboard)
+ (name dream_dashboard)
+ (libraries dream dune-build-info metrics metrics-rusage metrics-lwt luv
+   user-agent-parser))
 
 (subdir
  asset/
@@ -18,7 +19,7 @@
     ; because dune won't include node_modules/.bin in the build, no matter
     ; what I do.
     (run node node_modules/tailwindcss/lib/cli.js build --content
-      'lib/dream-analytics/templates/*.eml' -o %{target})))))
+      'src/template/*.eml' -o %{target})))))
 
 (rule
  (targets asset.ml)

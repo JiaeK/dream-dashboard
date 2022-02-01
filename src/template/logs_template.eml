@@ -1,0 +1,27 @@
+let render 
+  ~prefix
+  () =
+  Layout_template.render ~prefix ~title:"Dream Dashboard" @@
+  <div class="relative bg-gray-200">
+    <div class="absolute inset-0 flex flex-col" aria-hidden="true">
+      <div class="flex-1 bg-gray-100"></div>
+      <div class="flex-1 bg-gray-200"></div>
+    </div>
+    <div class="relative max-w-5xl mx-auto">
+      <div class="flex flex-col min-h-screen lg:flex-row lg:items-center lg:p-8">
+        <div class="flex flex-col flex-grow bg-white lg:shadow-2xl lg:rounded-lg lg:overflow-hidden">
+          <div class="flex-grow flex flex-col justify-center p-12">
+
+            <div>
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Last 30 days
+              </h3>
+              <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

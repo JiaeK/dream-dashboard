@@ -18,9 +18,4 @@ val router :
 
 val analytics : ?store:(module Store.S) -> unit -> Dream.middleware
 
-(** Private modules for tests only. *)
-module Private : sig
-  module Handler : sig
-    val index : store:(module Store.S) -> prefix:string -> Dream.handler
-  end
-end
+val init : ?interval:float -> unit -> unit
