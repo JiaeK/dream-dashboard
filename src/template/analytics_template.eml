@@ -17,7 +17,7 @@ let render ~prefix (events : Event.t list) =
   let top_os = Event.top_os events in
   let top_devices = Event.top_devices events in
   let top_referers = Event.top_referers events in
-  Layout_template.render ~prefix ~title:"Analytics | Dream Dashboard" @@
+  Layout_template.render ~prefix ~title:"Analytics" @@
   <div class="p-12 flex-1 min-w-0">
     <p class="text-sm font-medium text-gray-900">
       Top pages

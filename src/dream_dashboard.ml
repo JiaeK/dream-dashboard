@@ -20,8 +20,8 @@ module Handler = struct
     Dream.html
       (Overview_template.render ~prefix ~ocaml_version:Info.ocaml_version
          ~dream_version:(Info.dream_version ())
-         ~dashboard_version:(Info.version ()) ~platform:Info.platform_string
-         ~architecture:Info.arch_string ~uptime:(Info.uptime ()) ())
+         ~dashboard_version:(Info.version ()) ~uptime:(Info.uptime ())
+         ~os_version:(Info.os_version ()) ())
 
   let analytics ~store ~prefix _req =
     let open Lwt.Syntax in
@@ -37,6 +37,7 @@ module Handler = struct
     Dream.html
       (Monitoring_template.render ~prefix ~cpu_count:Info.cpu_count
          ~loadavg_list:(My_metrics.loadavg_report ())
+         ~memory_list:(My_metrics.memory_report ())
          ())
 
   let logs ~prefix _req = Dream.html (Logs_template.render ~prefix ())
@@ -80,9 +81,9 @@ module Router = struct
     Dream.scope prefix middlewares
       [
         Dream.get "/" (Handler.overview ~prefix);
-        Dream.get "/" (Handler.monitoring ~prefix);
-        Dream.get "/" (Handler.logs ~prefix);
-        Dream.get "/" (Handler.analytics ~prefix ~store);
+        Dream.get "/monitoring" (Handler.monitoring ~prefix);
+        Dream.get "/logs" (Handler.logs ~prefix);
+        Dream.get "/analytics" (Handler.analytics ~prefix ~store);
         Dream.get "/assets/**" (Dream.static ~loader "");
       ]
 

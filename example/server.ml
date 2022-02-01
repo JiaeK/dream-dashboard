@@ -2,6 +2,7 @@ let () =
   Dream_dashboard.init ();
   Dream.run @@ Dream.logger
   @@ Dream_dashboard.router ~prefix:"/dashboard" ()
+  @@ Dream_dashboard.analytics ()
   @@ Dream.router
        [
          Dream.get "/" (fun _req ->

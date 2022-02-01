@@ -126,11 +126,13 @@ let cache_reporter () =
 let get_metrics_ref = ref (fun () -> SM.empty)
 let get_metrics () = !get_metrics_ref ()
 let loadavg_src = loadavg_src ~tags:[]
+let memory_src = memory_src ~tags:[]
 
 let init_metrics ?(interval = 10.0) () =
   Metrics.enable_all ();
   Metrics_lwt.init_periodic (fun () -> Lwt_unix.sleep interval);
   Metrics_lwt.periodically loadavg_src;
+  Metrics_lwt.periodically memory_src;
   let get_metrics_new, reporter = cache_reporter () in
   Metrics.set_reporter reporter;
   get_metrics_ref := get_metrics_new
@@ -141,7 +143,7 @@ module Metrics_field = struct
     | V (Float, x) -> (x : float)
     | _ -> failwith "wrong type for metrics field"
 
-  let _uint f =
+  let uint f =
     match Metrics.value f with
     | V (Uint, x) -> (x : int)
     | _ -> failwith "wrong type for metrics field"
@@ -170,5 +172,22 @@ let loadavg_report () =
       { avg_1; avg_5; avg_15 })
     data
 
-let memory_report () = failwith "TODO"
+let memory_report () =
+  let _tags, data =
+    match Metrics.SM.find_opt (Src memory_src) (get_metrics ()) with
+    | Some x -> x
+    | None ->
+        Logs.err (fun m ->
+            m
+              "The Metrics src for memory could not be found. Did you call \
+               \"init_metrics ()\"?");
+        raise Not_found
+  in
+  List.map
+    (fun (x : data) ->
+      let free = Metrics_field.uint (get_field "free" x) in
+      let total = Metrics_field.uint (get_field "total" x) in
+      { free; total })
+    data
+
 let open_fds_report () = failwith "TODO"

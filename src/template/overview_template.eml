@@ -1,76 +1,31 @@
-let render 
-  ~prefix
-  ~ocaml_version
-  ~dream_version
-  ~dashboard_version
-  ~platform
-  ~architecture
-  ~uptime
-  () =
-  Layout_template.render ~prefix ~title:"Dream Dashboard" @@
-  <div class="relative bg-gray-200">
-    <div class="absolute inset-0 flex flex-col" aria-hidden="true">
-      <div class="flex-1 bg-gray-100"></div>
-      <div class="flex-1 bg-gray-200"></div>
-    </div>
-    <div class="relative max-w-5xl mx-auto">
-      <div class="flex flex-col min-h-screen lg:flex-row lg:items-center lg:p-8">
-        <div class="flex flex-col flex-grow bg-white lg:shadow-2xl lg:rounded-lg lg:overflow-hidden">
-          <div class="flex-grow flex flex-col justify-center p-12">
-
-            <div>
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Last 30 days
-              </h3>
-              <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                  <dt class="text-sm font-medium text-gray-500 truncate">
-                    OCaml Version
-                  </dt>
-                  <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    <%s ocaml_version %>
-                  </dd>
-                </div>
-
-                <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                  <dt class="text-sm font-medium text-gray-500 truncate">
-                    Dream Version
-                  </dt>
-                  <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    <%s dream_version %>
-                  </dd>
-                </div>
-
-                <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                  <dt class="text-sm font-medium text-gray-500 truncate">
-                    Dashboard Version
-                  </dt>
-                  <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    <%s dashboard_version %>
-                  </dd>
-                </div>
-
-                <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                  <dt class="text-sm font-medium text-gray-500 truncate">
-                    Uptime
-                  </dt>
-                  <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    <%f uptime %>
-                  </dd>
-                </div>
-
-                <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                  <dt class="text-sm font-medium text-gray-500 truncate">
-                    System
-                  </dt>
-                  <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    <%s platform %> <%s architecture %>
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </div>
+let render ~prefix ~ocaml_version ~dream_version ~dashboard_version ~uptime ~os_version () =
+Layout_template.render ~prefix ~title:"Overview" @@
+<div>
+  <div>
+    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">OCaml Version</dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%s ocaml_version %></dd>
       </div>
-    </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">Dream Version</dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%s dream_version %></dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">Dashboard Version</dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%s dashboard_version %></dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">Uptime</dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%f uptime %></dd>
+      </div>
+    </dl>
   </div>
+
+  <div class="mt-4 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+    <span class="text-lg font-semibold text-gray-900"><%s os_version %></span>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+(subdir
+ asset/
+ (rule
+  (target main.css)
+  (deps
+   (source_tree ../node_modules)
+   (source_tree ../src/template))
+  (action
+   (chdir
+    %{workspace_root}
+    (run
+     node
+     node_modules/tailwindcss/lib/cli.js
+     build
+     -c
+     tailwind.config.js
+     -o
+     %{target})))))
