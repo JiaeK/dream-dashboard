@@ -1,4 +1,5 @@
 let () =
+  Dream_monitoring.init_metrics ();
   Dream.run @@ Dream.logger
   @@ Dream_monitoring.router ~prefix:"/dashboard" ()
   @@ Dream_analytics.router ~prefix:"/analytics" ()

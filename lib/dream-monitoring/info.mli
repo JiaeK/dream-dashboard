@@ -30,11 +30,13 @@ val uptime : unit -> float
 (** [uptime ()] returns the uptime of the system in seconds. *)
 
 val arch_string : string
+(** ??? *)
 
 val arch : arch
 (** [arch] is the CPU architecture the binary is running on. *)
 
 val platform_string : string
+(** ??? *)
 
 val platform : platform
 (** [platform] is the operating system type the binary is running on. *)
@@ -43,10 +45,14 @@ val os_version : unit -> string
 (** [os_version] is the version of the operating system the binary is running
     on. *)
 
-(* val cpu_count : int *)
-(** [cpu_count] is the number of CPUs cores available. *)
-
-val cpu_usage : unit -> float
 val os_machine : unit -> string
+(** ??? *)
+
 val os_release : unit -> string
+(** ??? *)
+
 val sysname : unit -> string
+(** ??? *)
+
+val cpu_count : int
+(** ??? *)

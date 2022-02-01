@@ -5,9 +5,11 @@ let render
   ~dashboard_version
   ~platform
   ~architecture
-  ~cpu_usage
   ~uptime
+  ~cpu_count
+  ~(loadavg_list : My_metrics.loadavg list)
   () =
+  let cpu_count_f = (float_of_int cpu_count) in
   Layout_template.render ~prefix ~title:"Dream Dashboard" @@
   <div class="relative bg-gray-200">
     <div class="absolute inset-0 flex flex-col" aria-hidden="true">
@@ -74,7 +76,11 @@ let render
                     CPU usage
                   </dt>
                   <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    <%f cpu_usage %>
+                    <% loadavg_list |> List.iter (fun (loadavg : My_metrics.loadavg) -> %>
+                    <div class="py-2">
+                      <%f loadavg.avg_1 /. cpu_count_f %>, <%f loadavg.avg_5 /. cpu_count_f %>, <%f loadavg.avg_15 /. cpu_count_f %>
+                    </div>
+                    <% ); %>
                   </dd>
                 </div>
               </dl>

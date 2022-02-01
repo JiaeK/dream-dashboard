@@ -19,9 +19,14 @@ let dream_version () =
       | None -> "dev"
       | Some version -> Version.to_string version)
 
-let uptime =
-  let init = Unix.gettimeofday () in
-  fun () -> Unix.gettimeofday () -. init
+let uptime () =
+  match Luv.Resource.uptime () with
+  | Ok x -> x
+  | Error err ->
+      Logs.err (fun m ->
+          m "An error occured when reading the uptime: %s"
+            (Luv.Error.strerror err));
+      0.
 
 type platform = Darwin | Freebsd | Linux | Openbsd | Sunos | Win32 | Android
 
@@ -106,92 +111,23 @@ let os_machine () =
   let+ uname = Luv.System_info.uname () in
   uname.Luv.System_info.Uname.machine
 
-let get_field name data =
-  let fields = Metrics.Data.fields data in
-  List.find (fun field -> Metrics.key field = name) fields
-
-module Metrics_field = struct
-  let float f =
-    match Metrics.value f with
-    | V (Float, x) -> (x : float)
-    | _ -> failwith "wrong type for metrics field"
-
-  let uint f =
-    match Metrics.value f with
-    | V (Uint, x) -> (x : int)
-    | _ -> failwith "wrong type for metrics field"
-end
-
-let rusage_src = Metrics_rusage.rusage_src ~tags:[]
-let kinfo_mem_src = Metrics_rusage.kinfo_mem_src ~tags:[]
-let proc_cpu_src = My_metrics.proc_cpu_src ~tags:[]
-let proc_fds_src = My_metrics.open_fds ~tags:[]
-let cpu_usage () = 0.42
-(* Patrik does not know how to return the cpu usage found below *)
-
-let () =
-  let interval = 1.0 in
-  Metrics.enable_all ();
-  Metrics_lwt.init_periodic (fun () -> Lwt_unix.sleep interval);
-  Metrics_lwt.periodically rusage_src;
-  Metrics_lwt.periodically kinfo_mem_src;
-  Metrics_lwt.periodically proc_cpu_src;
-  Metrics_lwt.periodically proc_fds_src;
-
-  let get_metrics, reporter = Metrics.cache_reporter () in
-  Metrics.set_reporter reporter;
-  let past_rusage = ref None in
-  let past_proc_cpu = ref None in
-  let report () =
-    try
-      let _tags, rusage_data =
-        Metrics.SM.find (Src rusage_src) (get_metrics ())
-      in
-      let _tags, proc_cpu_data =
-        Metrics.SM.find (Src proc_cpu_src) (get_metrics ())
-      in
-      let _tags, proc_fds_data =
-        Metrics.SM.find (Src proc_fds_src) (get_metrics ())
-      in
-      match (!past_rusage, !past_proc_cpu) with
-      | None, _ | _, None ->
-          past_rusage := Some rusage_data;
-          past_proc_cpu := Some proc_cpu_data
-      | Some past_rusage_data, Some past_proc_cpu_data ->
-          let utime_before =
-            Metrics_field.float (get_field "utime" past_rusage_data)
-          in
-          let utime_after =
-            Metrics_field.float (get_field "utime" rusage_data)
-          in
-
-          let total_before =
-            Int.to_float
-              (Metrics_field.uint (get_field "total" past_proc_cpu_data))
-          in
-          let total_after =
-            Int.to_float (Metrics_field.uint (get_field "total" proc_cpu_data))
-          in
-
-          let cpu_usage =
-            100.
-            *. ((utime_after -. utime_before) /. (total_after -. total_before))
-          in
-
-          past_rusage := Some rusage_data;
-          past_proc_cpu := Some proc_cpu_data;
-          print_endline
-            (Printf.sprintf "open_fds: %d"
-               (Metrics_field.uint (get_field "open_fds" proc_fds_data)));
-          print_endline
-            (Printf.sprintf "CPU Usage: %f\n total: %d" cpu_usage
-               (Metrics_field.uint (get_field "total" proc_cpu_data)))
-    with Not_found -> ()
-  in
-  let rec aux () =
-    let open Lwt.Syntax in
-    report ();
-    let* () = Lwt_unix.sleep 5. in
-    aux ()
-  in
-  Lwt.async aux
+let cpu_count =
+  try
+    match Sys.os_type with
+    | "Win32" -> int_of_string (Sys.getenv "NUMBER_OF_PROCESSORS")
+    | _ -> (
+        let i = Unix.open_process_in "getconf _NPROCESSORS_ONLN" in
+        let close () = ignore (Unix.close_process_in i) in
+        let ib = Scanf.Scanning.from_channel i in
+        try
+          Scanf.bscanf ib "%d" (fun n ->
+              close ();
+              n)
+        with e ->
+          close ();
+          raise e)
+  with
+  | Not_found | Sys_error _ | Failure _ | Scanf.Scan_failure _ | End_of_file
+  | Unix.Unix_error (_, _, _)
+  ->
+    1

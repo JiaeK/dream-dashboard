@@ -6,6 +6,8 @@ val router :
 (** A Dream middleware that will serve the dashboard under the [prefix]
     endpoint. If prefix is not specified, it will be [/dashboard] by default. *)
 
+val init_metrics : ?interval:float -> unit -> unit
+
 (** Private modules for tests only. *)
 module Private : sig
   module Handler : sig

@@ -12,5 +12,5 @@
     ; We use node_modules/tailwindcss/lib/cli.js instead of `npx tailwindcss`
     ; because dune won't include node_modules/.bin in the build, no matter
     ; what I do.
-    (run node node_modules/tailwindcss/lib/cli.js build -c tailwind.config.js
+    (run node node_modules/tailwindcss/lib/cli.js build --content '**/*.eml'
       -o %{target})))))

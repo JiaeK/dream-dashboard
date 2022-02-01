@@ -4,8 +4,9 @@ module Handler = struct
       (Index_template.render ~prefix ~ocaml_version:Info.ocaml_version
          ~dream_version:(Info.dream_version ())
          ~dashboard_version:(Info.version ()) ~platform:Info.platform_string
-         ~architecture:Info.arch_string ~cpu_usage:(Info.cpu_usage ())
-         ~uptime:(Info.uptime ()) ())
+         ~architecture:Info.arch_string ~cpu_count:Info.cpu_count
+         ~uptime:(Info.uptime ()) ()
+         ~loadavg_list:(My_metrics.loadavg_report ()))
 end
 
 module Router = struct
@@ -30,3 +31,5 @@ let router ?(prefix = "/dashboard") ?(middlewares = []) () =
 module Private = struct
   module Handler = Handler
 end
+
+let init_metrics = My_metrics.init_metrics
