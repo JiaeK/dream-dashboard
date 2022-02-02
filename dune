@@ -4,13 +4,15 @@
   (target main.css)
   (deps
    (source_tree ../node_modules)
-   (source_tree ../lib/templates))
-  (mode promote-until-clean)
+   (source_tree ../src/template))
   (action
    (chdir
     %{workspace_root}
-    ; We use node_modules/tailwindcss/lib/cli.js instead of `npx tailwindcss`
-    ; because dune won't include node_modules/.bin in the build, no matter
-    ; what I do.
-    (run node node_modules/tailwindcss/lib/cli.js build --content '**/*.eml'
-      -o %{target})))))
+    (run
+     node
+     node_modules/tailwindcss/lib/cli.js
+     build
+     -c
+     tailwind.config.js
+     -o
+     %{target})))))

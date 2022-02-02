@@ -29,14 +29,8 @@ val dream_version : unit -> string
 val uptime : unit -> float
 (** [uptime ()] returns the uptime of the system in seconds. *)
 
-val arch_string : string
-(** ??? *)
-
 val arch : arch
 (** [arch] is the CPU architecture the binary is running on. *)
-
-val platform_string : string
-(** ??? *)
 
 val platform : platform
 (** [platform] is the operating system type the binary is running on. *)
