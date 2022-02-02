@@ -22,6 +22,7 @@
   dream
   dune-build-info
   luv
+  metrics-lwt
   user-agent-parser
   (alcotest :with-test)
   (odoc :with-doc)))
