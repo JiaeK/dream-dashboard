@@ -131,3 +131,19 @@ let cpu_count =
   | Unix.Unix_error (_, _, _)
   ->
     1
+
+let open_fds () =
+  let h = Unix.opendir "/proc/self/fd" in
+  Fun.protect
+    ~finally:(fun () -> Unix.closedir h)
+    (fun () ->
+      let rec inner count =
+        try
+          let name = Unix.readdir h in
+          match name with
+          | "." -> inner count
+          | ".." -> inner count
+          | _ -> inner (count + 1)
+        with End_of_file -> count
+      in
+      inner 0)

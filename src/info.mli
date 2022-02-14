@@ -50,3 +50,6 @@ val sysname : unit -> string
 
 val cpu_count : int
 (** ??? *)
+
+val open_fds : unit -> int
+(** ??? *)

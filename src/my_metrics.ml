@@ -79,29 +79,6 @@ let memory_src ~tags =
   in
   Src.v ~doc ~tags ~data "memory"
 
-let open_fds ~tags =
-  let doc = "Number of open file descriptors" in
-  let graph = Graph.v ~title:doc ~ylabel:"value" () in
-  let dir = Printf.sprintf "/proc/self/fd" in
-  let data () =
-    let h = Unix.opendir dir in
-    Fun.protect
-      ~finally:(fun () -> Unix.closedir h)
-      (fun () ->
-        let rec inner count =
-          try
-            let name = Unix.readdir h in
-            match name with
-            | "." -> inner count
-            | ".." -> inner count
-            | _ -> inner (count + 1)
-          with End_of_file -> count
-        in
-        let fds = inner 0 in
-        Data.v [ uint "open_fds" ~graph fds ])
-  in
-  Src.v ~doc ~tags ~data "open_fds"
-
 (* Reporters *)
 
 (* This is an alternative to Metrics' cache reporter, but we keep the previous
@@ -189,5 +166,3 @@ let memory_report () =
       let total = Metrics_field.uint (get_field "total" x) in
       { free; total })
     data
-
-let open_fds_report () = failwith "TODO"

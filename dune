@@ -8,11 +8,5 @@
   (action
    (chdir
     %{workspace_root}
-    (run
-     node
-     node_modules/tailwindcss/lib/cli.js
-     build
-     -c
-     tailwind.config.js
-     -o
-     %{target})))))
+    (run node node_modules/tailwindcss/lib/cli.js build -c tailwind.config.js
+      -o %{target})))))

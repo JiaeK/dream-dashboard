@@ -17,5 +17,4 @@ val router :
     endpoint. If prefix is not specified, it will be [/dashboard] by default. *)
 
 val analytics : ?store:(module Store.S) -> unit -> Dream.middleware
-
 val init : ?interval:float -> unit -> unit
