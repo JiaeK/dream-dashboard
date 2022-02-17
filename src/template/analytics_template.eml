@@ -17,6 +17,7 @@ let render ~prefix (events : Event.t list) =
   let top_os = Event.top_os events in
   let top_devices = Event.top_devices events in
   let top_referers = Event.top_referers events in
+  let unique_visitors = Event.unique_visitors events in
   Layout_template.render ~prefix ~title:"Analytics" @@
   <div class="p-12 flex-1 min-w-0">
     <p class="text-sm font-medium text-gray-900">
@@ -155,6 +156,35 @@ let render ~prefix (events : Event.t list) =
               </thead>
               <tbody>
                 <%s! render_top_pages top_referers %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <div class="p-12 flex-1 min-w-0">
+    <p class="text-sm font-medium text-gray-900">
+      Unique Visitors
+    </p>
+    <div class="mt-5 flex flex-col">
+      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Page url
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Visitors
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <%s! render_top_pages unique_visitors %>
               </tbody>
             </table>
           </div>

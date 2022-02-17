@@ -60,7 +60,8 @@ module Middleware = struct
           let url = Dream.target req in
           let referer = Dream.header "referer" req in
           let timestamp = Unix.gettimeofday () in
-          let event = Event.{ url; ua; referer; timestamp } in
+          let ip = Dream.client req in
+          let event = Event.{ url; ua; referer; timestamp; ip } in
           let+ result = Repo.create_event event in
           match result with
           | Ok _ -> ()

@@ -3,6 +3,7 @@ type t = {
   ua : User_agent.t;
   referer : string option;
   timestamp : float;
+  ip : string;
 }
 
 let get_count ~get_el events =
@@ -36,3 +37,6 @@ let top_devices events =
   get_count ~get_el:(fun event -> Some event.ua.device_family) events
 
 let top_referers events = get_count ~get_el:(fun event -> event.referer) events
+
+let unique_visitors events =
+  get_count ~get_el:(fun event -> Some event.ip) events
