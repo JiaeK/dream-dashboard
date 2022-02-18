@@ -7,12 +7,12 @@ module Store : sig
   module In_memory : S
 end
 
-val router :
+val route :
   ?store:(module Store.S) ->
   ?prefix:string ->
   ?middlewares:Dream.middleware list ->
   unit ->
-  Dream.middleware
+  Dream.route
 (** A Dream middleware that will serve the dashboard under the [prefix]
     endpoint. If prefix is not specified, it will be [/dashboard] by default. *)
 
