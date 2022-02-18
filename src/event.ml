@@ -48,4 +48,4 @@ let top_countries events =
     events
 
 let unique_visitors events =
-  get_count ~get_el:(fun event -> Some event.ip_digest) events
+  List.length @@ get_count ~get_el:(fun event -> Some event.ip_digest) events
