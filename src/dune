@@ -1,8 +1,19 @@
 (library
  (name dream_dashboard)
  (public_name dream-dashboard)
- (libraries dream dune-build-info metrics metrics-rusage metrics-lwt luv
-   user-agent-parser))
+ (libraries
+  dream
+  hyper
+  yojson
+  ppx_deriving_yojson.runtime
+  dune-build-info
+  metrics
+  metrics-rusage
+  metrics-lwt
+  luv
+  user-agent-parser)
+ (preprocess
+  (pps ppx_deriving_yojson)))
 
 (rule
  (targets asset.ml)

@@ -19,10 +19,13 @@
    (>= 4.08.0))
   dune
   crunch
-  dream
+  (dream
+   (>= 1.0.0~alpha3))
   dune-build-info
   luv
   metrics-lwt
   user-agent-parser
+  mmdb
+  digestif
   (alcotest :with-test)
   (odoc :with-doc)))

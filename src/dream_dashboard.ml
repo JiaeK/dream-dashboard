@@ -46,7 +46,7 @@ end
 module Middleware = struct
   let analytics store handler req =
     let open Lwt.Syntax in
-    let ua = Dream.header "user-agent" req |> Option.map User_agent.parse in
+    let ua = Dream.header req "user-agent" |> Option.map User_agent.parse in
     let* () =
       match ua with
       | None ->
@@ -58,10 +58,18 @@ module Middleware = struct
       | Some ua -> (
           let (module Repo : Store.S) = store in
           let url = Dream.target req in
-          let referer = Dream.header "referer" req in
+          let referer = Dream.header req "referer" in
           let timestamp = Unix.gettimeofday () in
-          let ip = Dream.client req in
-          let event = Event.{ url; ua; referer; timestamp; ip } in
+          let ip =
+            Dream.client req |> Uri.of_string
+            |> Uri.host_with_default (* TODO: Change this to localhost *)
+                 ~default:"2a01:e0a:257:b9e0:54a9:960c:1ab5:7912"
+          in
+          let* ip_info = Ip_info.get ip in
+          let ip_digest =
+            Digestif.SHA256.digest_string ip |> Digestif.SHA256.to_raw_string
+          in
+          let event = Event.{ url; ua; referer; timestamp; ip_digest; ip_info } in
           let+ result = Repo.create_event event in
           match result with
           | Ok _ -> ()
@@ -78,7 +86,7 @@ module Router = struct
     | None -> Dream.empty `Not_Found
     | Some asset -> Dream.respond asset
 
-  let routes prefix middlewares store =
+  let route prefix middlewares store =
     Dream.scope prefix middlewares
       [
         Dream.get "/" (Handler.overview ~prefix);
@@ -87,14 +95,11 @@ module Router = struct
         Dream.get "/analytics" (Handler.analytics ~prefix ~store);
         Dream.get "/assets/**" (Dream.static ~loader "");
       ]
-
-  let router prefix middlewares store =
-    Dream.router [ routes prefix middlewares store ]
 end
 
-let router ?(store = (module Store.In_memory : Store.S))
-    ?(prefix = "/dashboard") ?(middlewares = []) () =
-  Router.router prefix middlewares store
+let route ?(store = (module Store.In_memory : Store.S)) ?(prefix = "/dashboard")
+    ?(middlewares = []) () =
+  Router.route prefix middlewares store
 
 let analytics ?(store = (module Store.In_memory : Store.S)) () =
   Middleware.analytics store
