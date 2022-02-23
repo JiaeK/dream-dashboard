@@ -194,7 +194,7 @@ let render ~prefix (events : Event.t list) =
     </div>
   </div>
 
-   <div class="p-12 flex-1 min-w-0">
+  <div class="p-12 flex-1 min-w-0">
     <p class="text-sm font-medium text-gray-900">
       Unique Visitors
     </p>
@@ -214,7 +214,10 @@ let render ~prefix (events : Event.t list) =
                 </tr>
               </thead>
               <tbody>
-                <%s! render_top_pages unique_visitors %>
+                <tr>
+                  <th></th>
+                  <th><%i! unique_visitors %></th>    
+                </tr>
               </tbody>
             </table>
           </div>

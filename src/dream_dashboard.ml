@@ -69,7 +69,9 @@ module Middleware = struct
           let ip_digest =
             Digestif.SHA256.digest_string ip |> Digestif.SHA256.to_raw_string
           in
-          let event = Event.{ url; ua; referer; timestamp; ip_digest; ip_info } in
+          let event =
+            Event.{ url; ua; referer; timestamp; ip_digest; ip_info }
+          in
           let+ result = Repo.create_event event in
           match result with
           | Ok _ -> ()
