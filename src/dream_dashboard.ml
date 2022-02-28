@@ -39,8 +39,6 @@ module Handler = struct
          ~loadavg_list:(My_metrics.loadavg_report ())
          ~memory_list:(My_metrics.memory_report ())
          ())
-
-  let logs ~prefix _req = Dream.html (Logs_template.render ~prefix ())
 end
 
 module Middleware = struct
@@ -93,7 +91,6 @@ module Router = struct
       [
         Dream.get "/" (Handler.overview ~prefix);
         Dream.get "/monitoring" (Handler.monitoring ~prefix);
-        Dream.get "/logs" (Handler.logs ~prefix);
         Dream.get "/analytics" (Handler.analytics ~prefix ~store);
         Dream.get "/assets/**" (Dream.static ~loader "");
       ]

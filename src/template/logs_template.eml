@@ -1,3 +1,0 @@
-let render ~prefix () =
-Layout_template.render ~prefix ~title:"Dream Dashboard" @@
-<div></div>
