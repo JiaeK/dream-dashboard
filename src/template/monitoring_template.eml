@@ -4,18 +4,18 @@ let memory_pct (m : My_metrics.memory) = 100. *. (float_of_int (m.free)) /. (flo
 Layout_template.render ~prefix ~title:"Monitoring" @@
 <div>
   <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-    <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">CPU usage</dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900">
+    <div class="px-4 py-5 shadow rounded-lg overflow-hidden sm:p-6 cards">
+      <dt class="text-sm font-medium truncate">CPU usage</dt>
+      <dd class="mt-1 text-3xl font-semibold ">
         <% loadavg_list |> List.iter (fun (loadavg : My_metrics.loadavg) -> %>
         <div class="py-2"><%f loadavg.avg_1 /. cpu_count_f %>, <%f loadavg.avg_5 /. cpu_count_f %>, <%f loadavg.avg_15 /. cpu_count_f %></div>
         <% ); %>
       </dd>
     </div>
 
-    <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">Memory usage</dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900">
+    <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6 cards">
+      <dt class="text-sm font-medium truncate">Memory usage</dt>
+      <dd class="mt-1 text-3xl font-semibold ">
         <% memory_list |> List.iter (fun (memory : My_metrics.memory) -> %>
         <div class="py-2"><%f memory_pct memory %></div>
         <% ); %>

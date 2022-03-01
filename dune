@@ -3,6 +3,7 @@
  (rule
   (target main.css)
   (deps
+  (source_tree %{workspace_root}/asset)
    (source_tree ../node_modules)
    (source_tree ../src/template))
   (action
