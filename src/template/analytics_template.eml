@@ -58,7 +58,7 @@ let render ~prefix (events : Event.t list) =
    
     <div>
       <dl class="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-3 xl:grid-cols-4">
-        <div class="shadow rounded-lg overflow-hidden sm:p-6 md:space-y-5 space-y-12 cards">
+        <div class="shadow rounded-lg overflow-hidden sm:p-6 space-y-5 lg:space-y-12 cards">
           <dt class="text-xs font-semibold  truncate opacity-60">UNIQUE VISITORS</dt>
           <dd class="mt-1 text-xl lg:text-3xl font-semibold flex justify-between items-baseline">
             <span>9.2K </span>
@@ -68,7 +68,7 @@ let render ~prefix (events : Event.t list) =
           </dd>
         </div>
   
-        <div class="shadow rounded-lg overflow-hidden sm:p-6 md:space-y-5 space-y-12 cards ">
+        <div class="shadow rounded-lg overflow-hidden sm:p-6 space-y-5 lg:space-y-12 cards">
           <dt class="text-xs font-semibold  truncate opacity-60">TOTAL PAGEVIEWS</dt>
           <dd class="mt-1 text-lg lg:text-3xl font-semibold flex justify-between items-baseline">
             <span>22.5K</span>
@@ -78,9 +78,9 @@ let render ~prefix (events : Event.t list) =
           </dd>
         </div>
   
-        <div class="shadow rounded-lg overflow-hidden sm:p-6 md:space-y-5 space-y-12 cards">
+        <div class="shadow rounded-lg overflow-hidden sm:p-6 space-y-5 lg:space-y-12 cards">
           <dt class="text-xs font-semibold  truncate opacity-60">VISIT DURATION</dt>
-          <dd class="mt-1 text-xl xl:text-3xl font-semibold flex justify-between items-baseline">
+          <dd class="mt-1 text-xl lg:text-3xl font-semibold flex justify-between items-baseline">
             <span>4m 23s</span>
             <span class="text-sm">
             <i class="fa-light fa-arrow-down text-xs mr-1 text-red-500"></i>

@@ -6,24 +6,24 @@ Layout_template.render ~prefix ~title:"Overview" @@
   </h1>
   <div>
     <dl class="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-3 xl:grid-cols-4">
-      <div class="px-6 py-5 shadow rounded-lg overflow-hidden sm:p-6 space-y-12 cards">
+      <div class="px-6 py-5 shadow rounded-lg overflow-hidden sm:p-6 space-y-6 lg:space-y-12 cards">
         <dt class="text-base font-semibold  truncate ">OCaml Version</dt>
-        <dd class="mt-1 text-3xl font-semibold break-all"><%s ocaml_version %></dd>
+        <dd class="mt-1 text-xl lg:text-3xl font-semibold break-all"><%s ocaml_version %></dd>
       </div>
 
-      <div class="px-6 py-5  shadow rounded-lg overflow-hidden sm:p-6 space-y-12 cards ">
+      <div class="px-6 py-5  shadow rounded-lg overflow-hidden sm:p-6 space-y-6 lg:space-y-12 cards ">
         <dt class="text-base font-semibold  truncate ">Dream Version</dt>
-        <dd class="mt-1 text-3xl font-semibold break-all"><%s dream_version %></dd>
+        <dd class="mt-1 text-xl lg:text-3xl font-semibold break-all"><%s dream_version %></dd>
       </div>
 
-      <div class="px-6 py-5  shadow rounded-lg overflow-hidden sm:p-6 space-y-12 cards">
+      <div class="px-6 py-5  shadow rounded-lg overflow-hidden sm:p-6 space-y-6 lg:space-y-12 cards">
         <dt class="text-base font-semibold  truncate ">Dashboard Version</dt>
-        <dd class="mt-1 text-3xl font-semibold break-all"><%s dashboard_version %></dd>
+        <dd class="mt-1 text-xl lg:text-3xl font-semibold break-all"><%s dashboard_version %></dd>
       </div>
 
-      <div class="px-6 py-5 shadow rounded-lg overflow-hidden sm:p-6 space-y-12 cards">
+      <div class="px-6 py-5 shadow rounded-lg overflow-hidden sm:p-6 space-y-6 lg:space-y-12 cards">
         <dt class="text-base font-semibold  truncate ">Uptime</dt>
-        <dd class="mt-1 text-3xl font-semibold break-all"><%f uptime %></dd>
+        <dd class="mt-1 text-xl lg:text-3xl font-semibold break-all"><%f uptime %></dd>
       </div>
     </dl>
   </div>
