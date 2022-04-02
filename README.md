@@ -4,6 +4,10 @@ Analytics and Monitoring dashboard for Dream
 
 *Note: Currently this repository continues to be a work in progress after being integrated into the repository of ocaml.org. It will upstream soon on ocaml.org.*
 
+:dizzy: Integration PR for ocaml.org is [here](https://github.com/ocaml/ocaml.org/pull/399)
+
+</br>
+
 ## Set up your development environment
 
 You need opam. You can install it by following [opam's documentation](https://opam.ocaml.org/doc/Install.html).
