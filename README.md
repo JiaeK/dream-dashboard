@@ -6,7 +6,7 @@ Analytics and Monitoring dashboard for Dream
 
 :dizzy: Integration PR for ocaml.org is [here](https://github.com/ocaml/ocaml.org/pull/399) <br>
 
-👀 After the intergation, it can be found in `src/` in ocaml.org's repo, which is [here](https://github.com/ocaml/ocaml.org/tree/main/src/dream_dashboard)
+👀 After the integation, it can be found in `src/` in ocaml.org's repo, which is [here](https://github.com/ocaml/ocaml.org/tree/main/src/dream_dashboard)
 
 </br>
 
