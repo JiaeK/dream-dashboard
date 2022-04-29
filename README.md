@@ -2,12 +2,13 @@
 
 Analytics and Monitoring dashboard for Dream
 
-*Note: Currently, this repository continues to be a work in progress after being integrated into the repository of ocaml.org. It will upstream soon on ocaml.org (version 3).*
+*Note: Currently, this repository continues to be a work in progress after being integrated into the repository of ocaml.org (version 3).*
 
 :dizzy: Integration PR for ocaml.org is [here](https://github.com/ocaml/ocaml.org/pull/399) <br>
 
 👀 After the integation, it can be found in `src/` in ocaml.org's repo, which is [here](https://github.com/ocaml/ocaml.org/tree/main/src/dream_dashboard)
 
+📊 Checkout the outlook from [here](https://ocaml.org/dashboard/)
 </br>
 
 ## Set up your development environment
