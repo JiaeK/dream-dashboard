@@ -1,8 +1,8 @@
 # Dream Dashboard 
 
-Analytics and Monitoring dashboard for Dream
+Analytics and Monitoring dashboard for [Dream](https://aantron.github.io/dream/)
 
-*Note: Currently, this repository continues to be a work in progress after being integrated into the repository of ocaml.org (version 3).*
+*Note: Currently, this repository continues to be a work in progress after being integrated into the repository of [ocaml.org](https://github.com/ocaml/ocaml.org) (version 3).*
 
 :dizzy: Integration PR for ocaml.org is [here](https://github.com/ocaml/ocaml.org/pull/399) <br>
 
